@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Factures Professionnel</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>📄 Générateur de Factures Professionnel</h1>
+            <p>Créez des factures conformes et professionnelles en quelques clics</p>
+        </header>
+
+        <div class="main-layout">
+            <!-- Formulaire -->
+            <div class="form-container">
+                <form id="invoiceForm">
+                    
+                    <!-- A. Identification du document -->
+                    <section class="form-section">
+                        <h2>📋 Identification du document</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="docType">Type de document *</label>
+                                <select id="docType" required>
+                                    <option value="FACTURE">FACTURE</option>
+                                    <option value="FACTURE D'AVOIR">FACTURE D'AVOIR</option>
+                                    <option value="FACTURE PRO FORMA">FACTURE PRO FORMA</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="invoiceNumber">Numéro de facture *</label>
+                                <input type="text" id="invoiceNumber" placeholder="Ex: FA-2025-001" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="issueDate">Date d'émission *</label>
+                                <input type="date" id="issueDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="serviceDate">Date de vente / prestation</label>
+                                <input type="date" id="serviceDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="internalRef">Référence interne</label>
+                                <input type="text" id="internalRef" placeholder="Optionnel">
+                            </div>
+                            <div class="form-group">
+                                <label for="currency">Devise *</label>
+                                <select id="currency">
+                                    <option value="EUR" selected>EUR (€)</option>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                    <option value="CHF">CHF</option>
+                                </select>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- B. Informations du vendeur -->
+                    <section class="form-section">
+                        <h2>🏢 Informations du vendeur / prestataire</h2>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="sellerName">Raison sociale ou Nom Prénom *</label>
+                                <input type="text" id="sellerName" placeholder="Ex: SARL TechSolutions" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerLegalForm">Forme juridique *</label>
+                                <select id="sellerLegalForm">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="Auto-entrepreneur">Auto-entrepreneur</option>
+                                    <option value="EI">EI - Entreprise Individuelle</option>
+                                    <option value="EIRL">EIRL</option>
+                                    <option value="EURL">EURL</option>
+                                    <option value="SARL">SARL</option>
+                                    <option value="SAS">SAS</option>
+                                    <option value="SASU">SASU</option>
+                                    <option value="SA">SA</option>
+                                    <option value="SNC">SNC</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerCapital">Capital social</label>
+                                <input type="text" id="sellerCapital" placeholder="Ex: 10 000 €">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="sellerAddress">Adresse complète *</label>
+                                <input type="text" id="sellerAddress" placeholder="Ex: 15 rue de la République" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerPostalCode">Code postal *</label>
+                                <input type="text" id="sellerPostalCode" placeholder="75001" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerCity">Ville *</label>
+                                <input type="text" id="sellerCity" placeholder="Paris" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerCountry">Pays *</label>
+                                <input type="text" id="sellerCountry" value="France" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerPhone">Téléphone *</label>
+                                <input type="tel" id="sellerPhone" placeholder="01 23 45 67 89" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerEmail">Email *</label>
+                                <input type="email" id="sellerEmail" placeholder="contact@entreprise.fr" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerWebsite">Site web</label>
+                                <input type="url" id="sellerWebsite" placeholder="https://www.entreprise.fr">
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerSIREN">SIREN *</label>
+                                <input type="text" id="sellerSIREN" placeholder="123 456 789" maxlength="11" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerSIRET">SIRET *</label>
+                                <input type="text" id="sellerSIRET" placeholder="123 456 789 00012" maxlength="17" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerRCS">RCS + Ville ou RM</label>
+                                <input type="text" id="sellerRCS" placeholder="RCS Paris B 123 456 789">
+                            </div>
+                            <div class="form-group">
+                                <label for="sellerVAT">N° TVA intracommunautaire</label>
+                                <input type="text" id="sellerVAT" placeholder="FR 12 123456789">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- C. Informations du client -->
+                    <section class="form-section">
+                        <h2>👤 Informations du client</h2>
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="clientName">Raison sociale ou Nom Prénom *</label>
+                                <input type="text" id="clientName" placeholder="Ex: Entreprise Client SA" required>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="clientAddress">Adresse complète *</label>
+                                <input type="text" id="clientAddress" placeholder="Ex: 42 avenue des Champs" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="clientPostalCode">Code postal *</label>
+                                <input type="text" id="clientPostalCode" placeholder="75008" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="clientCity">Ville *</label>
+                                <input type="text" id="clientCity" placeholder="Paris" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="clientCountry">Pays *</label>
+                                <input type="text" id="clientCountry" value="France" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="clientEmail">Email</label>
+                                <input type="email" id="clientEmail" placeholder="client@entreprise.fr">
+                            </div>
+                            <div class="form-group">
+                                <label for="clientPhone">Téléphone</label>
+                                <input type="tel" id="clientPhone" placeholder="01 98 76 54 32">
+                            </div>
+                            <div class="form-group">
+                                <label for="clientVAT">N° TVA intracommunautaire</label>
+                                <input type="text" id="clientVAT" placeholder="FR 98 987654321">
+                            </div>
+                            <div class="form-group">
+                                <label for="clientRef">Référence client interne</label>
+                                <input type="text" id="clientRef" placeholder="CLI-001">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- D. Lignes de facturation -->
+                    <section class="form-section">
+                        <h2>📝 Lignes de facturation</h2>
+                        <div id="invoiceLines">
+                            <!-- Les lignes seront ajoutées dynamiquement -->
+                        </div>
+                        <button type="button" id="addLineBtn" class="btn btn-secondary">+ Ajouter une ligne</button>
+                    </section>
+
+                    <!-- E. Acomptes et réductions -->
+                    <section class="form-section">
+                        <h2>💰 Acomptes et ajustements</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="deposit">Acompte déjà versé (€)</label>
+                                <input type="number" id="deposit" step="0.01" value="0" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="globalDiscount">Remise globale (%)</label>
+                                <input type="number" id="globalDiscount" step="0.01" value="0" min="0" max="100">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- F. TVA & fiscalité -->
+                    <section class="form-section">
+                        <h2>💼 TVA & fiscalité</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="vatRegime">Régime de TVA *</label>
+                                <select id="vatRegime">
+                                    <option value="normal">TVA normale</option>
+                                    <option value="autoEntrepreneur">Auto-entrepreneur (TVA non applicable)</option>
+                                    <option value="autoliquidation">Autoliquidation TVA</option>
+                                    <option value="exoneration">Exonération TVA</option>
+                                    <option value="intracommunautaire">TVA intracommunautaire</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="vatMention">Mention fiscale spéciale</label>
+                                <input type="text" id="vatMention" placeholder="Ex: TVA non applicable - art. 293B du CGI">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- G. Paiement -->
+                    <section class="form-section">
+                        <h2>💳 Conditions de paiement</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="paymentDueDate">Date limite de paiement *</label>
+                                <input type="date" id="paymentDueDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentStatus">Statut</label>
+                                <select id="paymentStatus">
+                                    <option value="brouillon">Brouillon</option>
+                                    <option value="envoyee" selected>Envoyée</option>
+                                    <option value="payee">Payée</option>
+                                    <option value="impayee">Impayée</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Modes de paiement acceptés</label>
+                                <div class="checkbox-group">
+                                    <label><input type="checkbox" name="paymentMethod" value="Virement" checked> Virement</label>
+                                    <label><input type="checkbox" name="paymentMethod" value="Carte bancaire"> Carte bancaire</label>
+                                    <label><input type="checkbox" name="paymentMethod" value="Chèque"> Chèque</label>
+                                    <label><input type="checkbox" name="paymentMethod" value="Espèces"> Espèces</label>
+                                    <label><input type="checkbox" name="paymentMethod" value="PayPal"> PayPal</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="iban">IBAN</label>
+                                <input type="text" id="iban" placeholder="FR76 1234 5678 9012 3456 7890 123">
+                            </div>
+                            <div class="form-group">
+                                <label for="bic">BIC</label>
+                                <input type="text" id="bic" placeholder="BNPAFRPPXXX">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="paymentRef">Référence de paiement</label>
+                                <input type="text" id="paymentRef" placeholder="Ex: Merci de mentionner le numéro de facture">
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- H. Mentions légales -->
+                    <section class="form-section">
+                        <h2>⚖️ Mentions légales</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="penaltyRate">Taux de pénalité de retard (%)</label>
+                                <input type="number" id="penaltyRate" step="0.01" value="10" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label for="recoveryFee">Indemnité forfaitaire de recouvrement (€)</label>
+                                <input type="number" id="recoveryFee" step="0.01" value="40" min="0">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="termsConditions">Conditions générales de vente</label>
+                                <textarea id="termsConditions" rows="2" placeholder="Lien ou résumé des CGV"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="insuranceMention">Mention d'assurance professionnelle</label>
+                                <input type="text" id="insuranceMention" placeholder="Ex: Assurance RC Pro - AXA Police n°123456">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="propertyReserve">Clause de réserve de propriété</label>
+                                <textarea id="propertyReserve" rows="2" placeholder="Ex: Les marchandises restent la propriété du vendeur jusqu'au paiement complet"></textarea>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="additionalNotes">Notes additionnelles</label>
+                                <textarea id="additionalNotes" rows="3" placeholder="Informations complémentaires"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Actions -->
+                    <div class="form-actions">
+                        <button type="button" id="previewBtn" class="btn btn-primary">👁️ Prévisualiser</button>
+                        <button type="button" id="generatePdfBtn" class="btn btn-success">📥 Télécharger PDF</button>
+                        <button type="reset" class="btn btn-secondary">🔄 Réinitialiser</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Prévisualisation -->
+            <div class="preview-container">
+                <div class="preview-header">
+                    <h2>Prévisualisation en temps réel</h2>
+                </div>
+                <div id="preview" class="preview-content">
+                    <div class="preview-placeholder">
+                        <p>📄</p>
+                        <p>La facture apparaîtra ici</p>
+                        <p class="preview-hint">Remplissez le formulaire et cliquez sur "Prévisualiser"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Totaux flottants -->
+        <div id="totalsFloat" class="totals-float">
+            <h3>Récapitulatif</h3>
+            <div class="total-line">
+                <span>Total HT:</span>
+                <span id="displayTotalHT">0,00 €</span>
+            </div>
+            <div class="total-line">
+                <span>Total TVA:</span>
+                <span id="displayTotalVAT">0,00 €</span>
+            </div>
+            <div class="total-line total-ttc">
+                <span>Total TTC:</span>
+                <span id="displayTotalTTC">0,00 €</span>
+            </div>
+            <div class="total-line">
+                <span>Acompte:</span>
+                <span id="displayDeposit">0,00 €</span>
+            </div>
+            <div class="total-line net-to-pay">
+                <span>Net à payer:</span>
+                <span id="displayNetToPay">0,00 €</span>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>Générateur de Factures Professionnel - © 2025 - Conforme aux normes françaises</p>
+    </footer>
+
+    <script src="utils.js"></script>
+    <script src="pdf-generator.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
