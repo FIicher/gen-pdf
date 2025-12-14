@@ -223,13 +223,15 @@ function calculateLineTotal(lineId) {
     const regime = document.getElementById('vatRegime').value;
     const effectiveVatRate = isTVAApplicable(regime) ? vatRate : 0;
     
-    // Calculs
-    const totalHT = calculateLineTotal(quantity, unitPrice, discount);
-    const totalVAT = calculateLineVAT(totalHT, effectiveVatRate);
+    // Calculs - utilise la fonction de utils.js avec un nom différent
+    const subtotal = quantity * unitPrice;
+    const discountAmount = (subtotal * discount) / 100;
+    const totalHT = subtotal - discountAmount;
+    const totalVAT = (totalHT * effectiveVatRate) / 100;
     const totalTTC = totalHT + totalVAT;
     
     // Affichage
-    const currency = document.getElementById('currency').value;
+    const currency = document.getElementById('currency').value || 'EUR';
     line.querySelector('.line-total-ht').textContent = formatCurrency(totalHT, currency);
     line.querySelector('.line-total-vat').textContent = formatCurrency(totalVAT, currency);
     line.querySelector('.line-total-ttc').textContent = formatCurrency(totalTTC, currency);

@@ -112,6 +112,11 @@ function convertHundreds(num) {
  * Formate un nombre en devise
  */
 function formatCurrency(amount, currency = 'EUR') {
+    // Validation de amount
+    if (amount === undefined || amount === null || isNaN(amount)) {
+        amount = 0;
+    }
+    
     const symbols = {
         'EUR': '€',
         'USD': '$',
@@ -119,7 +124,7 @@ function formatCurrency(amount, currency = 'EUR') {
         'CHF': 'CHF'
     };
     
-    return amount.toFixed(2).replace('.', ',') + ' ' + symbols[currency];
+    return parseFloat(amount).toFixed(2).replace('.', ',') + ' ' + symbols[currency];
 }
 
 /**
